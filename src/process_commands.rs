@@ -8,10 +8,10 @@ use std::io::{self, Write}; // Import Write trait for flush() method
 use std::sync::Arc;
 use tokio::sync::mpsc::Receiver;
 use tokio::sync::Mutex; // Adjust the path according to where Interaction is defined
-struct SharedState {
-    response_buffer: String,          // For the latest response
-    interaction_history: Vec<String>, // To store history of all interactions
-}
+// struct SharedState {
+//     response_buffer: String,          // For the latest response
+//     interaction_history: Vec<String>, // To store history of all interactions
+// }
 
 pub async fn process_commands(
     mut async_rx: Receiver<char>,
@@ -107,7 +107,7 @@ pub async fn process_commands(
                                                    // Combine the responses into a single Interaction and add it to interactions
                                                    let full_response: String = temp_responses.join("\n");
      
-                                                   println!("Full response: {}", full_response);
+                                                //    println!("Full response: {}", full_response);
                                                    let mut interactions =
                                                        interactions_clone.lock().await;
                                                    interactions.push(Interaction::new(full_response));
@@ -122,7 +122,13 @@ pub async fn process_commands(
                                                     Ok(content) => {
                                                         // println!("Extracted Content: {}", content);
                                                         // io::stdout().flush().unwrap();
-                                                        print!("{}", content); // No newline character here
+                                                        // ANSI escape code for green text
+                                                        let green = "\x1b[32m";
+                                                        // ANSI escape code to reset color
+                                                        let reset = "\x1b[0m";
+
+                                                        print!("{}{}{}", green, content, reset); 
+                                                        // print!("{}", content); // No newline character here
                                                         io::stdout().flush().unwrap(); // Flush to ensure it appears immediately
                                                                                        // Store in temporary vector
                                                                                        //   temp_interactions.push(Interaction::new(content));
